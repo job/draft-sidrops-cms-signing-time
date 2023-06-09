@@ -104,7 +104,10 @@
     </t>
     <section title="Guidance for Publishers">
       <t>
-        When serializing RPKI Signed Objects to a filesystem hierarchy for RSYNC consumption, the mod-time of the file containing the Signed Object MUST be set to the CMS signing-time contained within the Signed Object.
+        When serializing RPKI Signed Objects to a filesystem hierarchy for RSYNC consumption, the mod-time of the file containing the Signed Object SHOULD be set to the CMS signing-time contained within the Signed Object.
+      </t>
+      <t>
+        In general, actors are limited to changing objects in the publication point for a CA under their control. In some situations (i.e. creating an object at a parent CA through automated means), actors may be able to create/update/delete objects in a shared publication point. Using a filename derived from the one-time use EE certificate's public key prevents the publication of Signed Objects at the same URL and mod-time.
       </t>
     </section>
     <section title="Guidance for Relying Parties" anchor="rpguidance">
@@ -163,11 +166,10 @@
 
   <section title="Considerations and Alternative Approaches">
     <t>
-      A slightly different approach that has been suggested is to normalize file mod-times based on the Signed Object's embedded End-Entity (EE) X.509 notBefore timestamp value.
-      A downside of that approach is that CAs might backdate the notBefore timestamp to increase the validity window of the Signed Object, which in turn decreases insight for RPKI operators as to when exactly the Signed Object purportedly came into existence.
+      A slightly different approach that has been suggested is to normalize file mod-times based on the Signed Object's embedded End-Entity (EE) X.509 notBefore timestamp value. A downside of this approach is that objects from CAs not using one-time use EE certificates, per section 5.1.1 of <xref target="RFC9286" /> would result in multiple objects singed at different points in time with the same mod-times.
     </t>
     <t>
-      Along similar lines, the notBefore timestamp may be set in the future.  Setting the mod-time of a file to a future date may be unintuitive for users, and some programs (e.g. make) will warn on encountering files with such mod-times.
+      Additionally, CAs might backdate the notBefore timestamp to increase the validity window of the Signed Object, which in turn decreases insight for RPKI operators as to when exactly the Signed Object purportedly came into existence. Along similar lines, the notBefore timestamp may be set in the future.  Setting the mod-time of a file to a future date may be unintuitive for users, and some programs (e.g. make) will warn on encountering files with such mod-times.
     </t>
     <t>
       There is also an increased chance of two distinct objects published to the same path having the same mod-time and filesize under this approach, due to CAs setting the notBefore timestamp to some stable value for a given object and reissuance often not changing the file size (e.g. where a prefix or a max-length value is changed in a ROA).  In such a situation, if the receiver has the first copy of a file, RSYNC retrieval will skip the second copy of the file, and the synchronization operation for the associated repository will result in a "failed fetch", per section 6.6 of <xref target="RFC9286" />, due to an inconsistency between the file's hash and the hash listed in the associated manifest.  That in turn necessitates further retrieval operations on the part of the receiver.  The chance of two distinct objects being issued with the same mod-time and filesize when CMS signing-time is used to set the mod-time is much smaller, since it requires that those distinct objects be issued in very close succession.
