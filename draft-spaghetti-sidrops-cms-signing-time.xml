@@ -147,7 +147,7 @@
 
   <section title="Presence of CMS signing-time attribute in the field">
     <t>
-      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five RIR Trust Anchors in the last eight weeks (2023-04-14 to 2023-06-06), 100% of Signed Objects contain a CMS signing-time attribute.
+      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five RIR Trust Anchors in the last 9 months (2022-09-06 to 2023-06-06), 100% of Signed Objects contain a CMS signing-time attribute.
       [NOTE: a job is running to analyse the milions of objects going back to 2022-06-06 - might take a few more days to parse all that data]
     </t>
     <t>
