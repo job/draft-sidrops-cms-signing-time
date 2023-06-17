@@ -147,8 +147,7 @@
 
   <section title="Presence of CMS signing-time attribute in the field">
     <t>
-      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five RIR Trust Anchors in the last 9 months (2022-09-06 to 2023-06-06), 100% of Signed Objects contain a CMS signing-time attribute.
-      [NOTE: a job is running to analyse the milions of objects going back to 2022-06-06 - might take a few more days to parse all that data]
+      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five RIR Trust Anchors in the last 12 months (2022-06-06 to 2023-06-06), all of the 3,004,296,251 inspected Signed Objects contain a CMS signing-time attribute.
     </t>
     <t>
       The above means that already today, all Certificate Authorities produce Signed Objects which contain a CMS signing-time attribute. <!-- and have done so for quite a while. -->
