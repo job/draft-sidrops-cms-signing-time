@@ -60,7 +60,7 @@
     <t>
       RFC 6488 standardized a template for specifying Signed Objects that can be validated using the RPKI.
       Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed (RFC 8182), and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to optimize seamless transitions from RRDP to RSYNC.
+      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless transitions from RRDP to RSYNC.
       Additionally, this document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute.
     </t>
 
@@ -80,7 +80,7 @@
     <t>
       <xref target="RFC6488"/> standardized a template for specifying Signed Objects that can be validated using the RPKI.
       Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed <xref target="RFC8182"/>, and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time <xref target="RFC5652"/> attribute to optimize seamless transitions from RRDP to RSYNC.
+      This document describes how Publishers and Relying Parties can use the CMS signing-time <xref target="RFC5652"/> attribute to facilitate seamless transitions from RRDP to RSYNC.
       Additionally, this document updates <xref target="RFC6488"/> by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute.
     </t>
   </section>
@@ -88,10 +88,12 @@
   <section title="Optimizing Seamless transitions from RRDP to RSYNC">
     <t>
       To avoid needless re-transfers of unchanged files in consecutive RSYNC synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files: as long as a file's contents are unchanged, Publishers SHOULD ensure the file's last modification timestamp also doesn't change.
-      This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided when RSYNC is used for the first time, in instances where previous retrieval via RRDP has occurred, by leveraging that RRDP data.
     </t>
     <t>
-      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, RP implementations are expected to first try synchronization via RRDP, and if and only if that fails - for some reason (malformed XML, expired TLS certificate, TCP connection timeout, etc.) - attempt to synchronize via RSYNC instead.
+      This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of RSYNC, by leveraging data previously fetched via RRDP.
+    </t>
+    <t>
+      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, RP implementations are expected to first attempt synchronization via RRDP, and if and only if that fails - for some reason (malformed XML, expired TLS certificate, TCP connection timeout, etc.) - attempt to synchronize via RSYNC instead.
     </t>
     <t>
       In the RSYNC synchronization protocol, a file's last modification timestamp (from here on 'mod-time') and filesize are used to determine whether the general-purpose RSYNC synchronization algorithm needs to be executed for the file.
@@ -104,17 +106,22 @@
     </t>
     <section title="Guidance for Publishers">
       <t>
-        When serializing RPKI Signed Objects to a filesystem hierarchy for RSYNC consumption, the mod-time of the file containing the Signed Object SHOULD be set to the CMS signing-time contained within the Signed Object.
+        When serializing RPKI Signed Objects to a filesystem hierarchy for RSYNC consumption, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
+<!-- unsure if the below fits well in this section
       <t>
-        In general, actors are limited to changing objects in the publication point for a CA under their control. In some situations (i.e. creating an object at a parent CA through automated means), actors may be able to create/update/delete objects in a shared publication point. Using a filename derived from the one-time use EE certificate's public key prevents the publication of Signed Objects at the same URL and mod-time.
+        In general, actors are limited to changing objects in the publication point for a CA under their control.
+        In some situations (i.e. creating an object at a parent CA through automated means), actors may be able to create/update/delete objects in a shared publication point.
+        Using a filename derived from the one-time use EE certificate's public key prevents the publication of Signed Objects at the same URL and mod-time.
       </t>
+-->
     </section>
     <section title="Guidance for Relying Parties" anchor="rpguidance">
       <t>
-        When serializing RPKI Signed Objects retrieved via RRDP to a filesystem hierarchy, the mod-time of the file containing the Signed Object MUST be set to the CMS signing-time contained within the Signed Object.
+        When serializing RPKI Signed Objects retrieved via RRDP to a filesystem hierarchy, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
       <t>
+        When synchronizing via RSYNC, an RP ...
         If an RP uses RRDP to synthesize a filesystem hierarchy for the repository, then synchronizing from the publisher to the corresponding directory directly is an option.
         Alternatively, the RP may synchronize to a new (empty) directory while using the '--compare-dest=DIR' rsync feature, to avoid having to retrieve files that are already available by way of the synthesized filesystem hierarchy.
         The DIR variable SHOULD point at the directory containing previously fetched and validated RPKI data (in its original form, to ensure the filesize parameter matches).
