@@ -1,4 +1,4 @@
-NAME=draft-spaghetti-sidrops-cms-signing-time
+NAME=draft-ietf-sidrops-cms-signing-time
 
 LAST_UPLOADED=00
 

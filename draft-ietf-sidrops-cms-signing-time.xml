@@ -10,7 +10,7 @@
 
 <rfc xmlns:xi="http://www.w3.org/2001/XInclude"
   category="std"
-  docName="draft-spaghetti-sidrops-cms-signing-time-02"
+  docName="draft-ietf-sidrops-cms-signing-time-01"
   updates="6488"
   ipr="trust200902"
   submissionType="IETF"
@@ -170,31 +170,6 @@
     </t>
   </section>
 
-  <section title="Considerations and Alternative Approaches">
-    <t>
-      A slightly different approach that has been suggested is to normalize file mod-times based on the Signed Object's embedded End-Entity (EE) X.509 notBefore timestamp value. A downside of this approach is that objects from CAs not using one-time use EE certificates, per section 5.1.1 of <xref target="RFC9286" /> would result in multiple objects singed at different points in time with the same mod-times.
-    </t>
-    <t>
-      Additionally, CAs might backdate the notBefore timestamp to increase the validity window of the Signed Object, which in turn decreases insight for RPKI operators as to when exactly the Signed Object purportedly came into existence. Along similar lines, the notBefore timestamp may be set in the future.  Setting the mod-time of a file to a future date may be unintuitive for users, and some programs (e.g. make) will warn on encountering files with such mod-times.
-    </t>
-    <t>
-      There is also an increased chance of two distinct objects published to the same path having the same mod-time and filesize under this approach, due to CAs setting the notBefore timestamp to some stable value for a given object and reissuance often not changing the file size (e.g. where a prefix or a max-length value is changed in a ROA).  In such a situation, if the receiver has the first copy of a file, RSYNC retrieval will skip the second copy of the file, and the synchronization operation for the associated repository will result in a "failed fetch", per section 6.6 of <xref target="RFC9286" />, due to an inconsistency between the file's hash and the hash listed in the associated manifest.  That in turn necessitates further retrieval operations on the part of the receiver.  The chance of two distinct objects being issued with the same mod-time and filesize when CMS signing-time is used to set the mod-time is much smaller, since it requires that those distinct objects be issued in very close succession.
-    </t>
-    <t>
-      Another downside of using notBefore is that Publishers would need to deserialize both the CMS envelope and the X.509 EE certificate contained therein to extract a timestamp, instead of merely parsing the CMS envelope.
-    </t>
-    <t>
-      Ensuring the mod-time is set to the CMS signing-time gives RPKI operators a headstart when using tools like <xref target="ls"/>, in the sense that the mod-time aligns with the purported time of object issuance.
-    </t>
-    <t>
-      The CMS signing-time attribute has proven useful in researching and tracking delays in various layers of the RPKI <xref target="PAM23"/>.
-      Mandating the CMS signing-time to be present might aid future researchers studying the RPKI ecosystem.
-    </t>
-    <t>
-      The --checksum option to rsync disables the mod-time and filesize comparison check in favour of a check based on a whole-file checksum.  This check is slower than the mod-time and filesize check, but (in instances where the file content has not changed) faster than the general-purpose RSYNC synchronization algorithm.  Since ensuring consistency between the mod-time and filesize on both sides of the transaction is straightforward, there is no particular reason to pursue an approach based on --checksum.
-    </t>
-  </section>
-
   <section title="Update to RFC 6488">
     <t>
       This section updates <xref target="RFC6488"/> to make the CMS signing-time attribute mandatory and disallow the presence of the CMS binary-signing-time attribute.
@@ -294,6 +269,34 @@
       </front>
     </reference>
 
+    <reference anchor="rsyncit" target="https://github.com/RIPE-NCC/rsyncit/">
+      <front>
+        <title>rsyncit</title>
+        <author>
+          <organization>RIPE NCC</organization>
+        </author>
+        <date month="November" year="2023" />
+      </front>
+    </reference>
+
+    <reference anchor="apnicrepository" target="https://rpki.apnic.net/">
+      <front>
+        <title>APNIC Repository</title>
+        <author>
+          <organization>APNIC</organization>
+        </author>
+        <date year="2023" />
+      </front>
+    </reference>
+
+    <reference anchor="rpki-rrdp-tools-py" target="https://github.com/ties/rpki-rrdp-tools-py/">
+      <front>
+        <title>rpki-rrdp-tools-py</title>
+        <author fullname="Ties de Kock"/>
+        <date month="November" year="2023" />
+      </front>
+    </reference>
+
     <reference anchor="rpkiviews" target="http://www.rpkiviews.org/">
       <front>
         <title>rpkiviews</title>
@@ -337,6 +340,39 @@
 
   </references>
 
+  <section title="Considerations and Alternative Approaches">
+    <t>
+      A slightly different approach that has been suggested is to normalize file mod-times based on the Signed Object's embedded End-Entity (EE) X.509 notBefore timestamp value.
+      A downside of this approach is that objects from CAs not using one-time use EE certificates, per section 5.1.1 of <xref target="RFC9286" /> would result in multiple objects singed at different points in time with the same mod-times.
+    </t>
+    <t>
+      Additionally, CAs might backdate the notBefore timestamp to increase the validity window of the Signed Object, which in turn decreases insight for RPKI operators as to when exactly the Signed Object purportedly came into existence.
+      Along similar lines, the notBefore timestamp may be set in the future for contractual reasons.
+      Setting the mod-time of a file to a future date may be unintuitive for users, and some programs (e.g. GNU make) will warn on encountering files with such mod-times.
+    </t>
+    <t>
+      There is also an increased chance of two distinct objects published to the same path having the same mod-time and filesize under this approach, due to CAs setting the notBefore timestamp to some stable value for a given object and reissuance often not changing the file size (e.g. where a prefix or a max-length value is changed in a ROA).
+      In such a situation, if the receiver has the first copy of a file, RSYNC retrieval will skip the second copy of the file, and the synchronization operation for the associated repository will result in a "failed fetch", per section 6.6 of <xref target="RFC9286" />, due to an inconsistency between the file's hash and the hash listed in the associated manifest.
+      That in turn necessitates further retrieval operations on the part of the receiver.
+      The chance of two distinct objects being issued with the same mod-time and filesize when CMS signing-time is used to set the mod-time is much smaller, since it requires that those distinct objects be issued in very close succession.
+    </t>
+    <t>
+      Another downside of using notBefore is that Publishers would need to deserialize both the CMS envelope and the X.509 EE certificate contained therein to extract a timestamp, instead of merely parsing the CMS envelope.
+    </t>
+    <t>
+      Ensuring the mod-time is set to the CMS signing-time gives RPKI operators a headstart when using tools like <xref target="ls"/>, in the sense that the mod-time aligns with the purported time of object issuance.
+    </t>
+    <t>
+      The CMS signing-time attribute has proven useful in researching and tracking delays in various layers of the RPKI <xref target="PAM23"/>.
+      Mandating the CMS signing-time to be present might aid future researchers studying the RPKI ecosystem.
+    </t>
+    <t>
+      The <strong>--checksum</strong> option to rsync disables the mod-time and filesize comparison check in favour of a check based on a whole-file checksum.
+      This check is slower than the mod-time and filesize check, but (in instances where the file content has not changed) faster than the general-purpose RSYNC synchronization algorithm.
+      Since ensuring consistency between the mod-time and filesize on both sides of the transaction is straightforward, there is no particular reason to pursue an approach based on rsync's <strong>--checksum</strong> feature.
+    </t>
+  </section>
+
   <section title="Implementation status - RFC EDITOR: REMOVE BEFORE PUBLICATION">
     <t>
       This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in RFC 7942.
@@ -354,8 +390,11 @@
 
     <t>
       <list style="symbols">
-        <t>For the Publication side of the house: <xref target="rpkitouch"/></t>
-        <t>For the Relying Party side of the house: OpenBSD <xref target="rpki-client"/></t>
+        <t><xref target="rpkitouch"/> - a timestamp setter utility for both RSYNC servers and RRDP clients by Job Snijders in C.</t>
+        <t><xref target="rpki-client"/> - a Relying Party implementation by OpenBSD in C, a client side implementation.</t>
+        <t><xref target="rsyncit"/> - a RRDP-to-RSYNC sync tool by RIPE NCC in Java, run on the server side.</t>
+        <t><xref target="apnicrepository"/> - the public APNIC RPKI repository - the APNIC RSYNC server normalizes timestamps.</t>
+        <t><xref target="rpki-rrdp-tools-py"/> - a number of client-side RRDP utilities by Ties de Kock in Python.
       </list>
     </t>
 
