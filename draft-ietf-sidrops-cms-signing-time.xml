@@ -58,9 +58,9 @@
   <abstract>
 
     <t>
-      RFC 6488 standardized a template for specifying Signed Objects that can be validated using the RPKI.
-      Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed (RFC 8182), and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless transitions from RRDP to RSYNC.
+      RFC 6488 standardized a template for specifying Signed Objects: Cryptographic Message Syntax (CMS) protected content types for use with the Resource Public Key Infrastructure (RPKI).
+      Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed RPKI Repository Delta Protocol (RRDP) (RFC 8182), and new insights arose with respect to querying and combining the different distribution mechanisms.
+      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless failovers from RRDP to RSYNC.
       Additionally, this document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute.
     </t>
 
@@ -78,9 +78,9 @@
 
   <section title="Introduction">
     <t>
-      <xref target="RFC6488"/> standardized a template for specifying Signed Objects that can be validated using the RPKI.
-      Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed <xref target="RFC8182"/>, and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time <xref target="RFC5652"/> attribute to facilitate seamless transitions from RRDP to RSYNC.
+      <xref target="RFC6488"/> standardized a template for specifying Signed Objects: Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types for use with the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480"/>.
+      Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed, the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182"/>, and new insights arose with respect to querying and combining the different distribution mechanisms.
+      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless failovers from RRDP to RSYNC.
       Additionally, this document updates <xref target="RFC6488"/> by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute.
     </t>
   </section>
