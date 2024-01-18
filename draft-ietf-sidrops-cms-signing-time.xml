@@ -58,10 +58,21 @@
   <abstract>
 
     <t>
-      RFC 6488 standardized a template for specifying Cryptographic Message Syntax (CMS) protected content types for use with the Resource Public Key Infrastructure (RPKI) called Signed Objects.
-      Since the publication of that document, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP) (RFC 8182) and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless switchovers from RRDP to RSYNC.
-      Additionally, this document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute in Signed Objects.
+
+      In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types by way of a standard template.  That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.  At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
+
+    </t>
+
+    <t>
+
+      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP).  While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most Relying Party (RP) implementations.  However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.  As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
+
+    </t>
+
+    <t>
+
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.  Additionally, this document updates the RPKI Signed Object Template by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
+
     </t>
 
   </abstract>
@@ -78,35 +89,40 @@
 
   <section title="Introduction">
     <t>
-      <xref target="RFC6488"/> standardized a template for specifying Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types for use with the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480"/> called Signed Objects.
-      Since the publication of that document, a new additional protocol for distribution of RPKI repositories was developed, the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182"/>, and new insights arose with respect to querying and combining the different distribution mechanisms.
-      This document describes how Publishers and Relying Parties can use the CMS signing-time attribute to facilitate seamless switchovers from RRDP to RSYNC.
-      Additionally, this document updates <xref target="RFC6488"/> by mandating the presence of the CMS signing-time attribute and disallowing the binary-signing-time attribute in Signed Objects.
+      In the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480" />, Signed Objects are defined as Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types by way of a standard template <xref target="RFC6488" />.  That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.  At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
+    </t>
+
+    <t>
+      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182" />.  While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most RP implementations.  However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.  As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
+    </t>
+
+    <t>
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.  Additionally, this document updates <xref target="RFC6488" /> by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
   </section>
 
-  <section title="Seamless switchovers from RRDP to RSYNC">
+  <section title="Optimized transition from RRDP to rsync">
     <t>
-      To avoid needless re-transfers of unchanged files in consecutive RSYNC synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files: as long as a given file's contents are unchanged, Publishers SHOULD ensure that file's last modification timestamp also doesn't change.
+      To avoid needless re-transfers of unchanged files in consecutive rsync synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files: as long as a given file's contents do not change, Publishers SHOULD ensure that the file's last modification timestamp remains unchanged as well.
     </t>
     <t>
-      This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of RSYNC, by leveraging data previously fetched via RRDP.
+      This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of rsync, by leveraging data previously fetched via RRDP.
     </t>
     <t>
-      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/> and as implemented by all major RPKI cache software projects, modern Relying Parties (RPs) will first attempt synchronization via RRDP, and if and only if this synchronization via RRDP for some reason fails (malformed XML, expired TLS certificate, HTTP connection timeout, etc.) - then proceed to attempt to synchronize via RSYNC instead.
+      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, all modern RP implementations will first attempt synchronization via RRDP.  If synchronization via RRDP fails for some reason (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
     </t>
     <t>
-      In the RSYNC synchronization protocol, a file's last modification timestamp (from here on 'mod-time') and filesize are used to determine whether the general-purpose RSYNC synchronization algorithm needs to be executed for the file.
-      This is the default mode for both GPL <xref target="rsync"/> and OpenBSD <xref target="openrsync"/> implementations.
+      In the rsync synchronization protocol, a file's last modification timestamp (from here on 'mod-time') and filesize are used to determine whether the general-purpose rsync synchronization algorithm needs to be executed for the file.
+      This is the default mode for both the original rsync implementation <xref target="rsync"/> and the OpenBSD implementation <xref target="openrsync"/>.
       If the sender's copy of the file and the receiver's copy of the file both have the same mod-time and filesize, the files are assumed to contain the same content, and will be omitted from the list of files to be transferred.
-      Ensuring consistency with respect to mod-time for both senders and receivers helps to reduce the burden of RSYNC synchronization in terms of network bandwidth, disk I/O operations, and CPU usage.
+      Ensuring consistency with respect to mod-time for both senders and receivers helps to reduce the burden of rsync synchronization in terms of network bandwidth, disk I/O operations, and CPU usage.
     </t>
     <t>
-      In order to reduce the burden of the RSYNC synchronization (following a RRDP failure), Publishers and Relying Parties SHOULD adhere to the following guidelines.
+      In order to reduce the burden of the rsync synchronization (following an RRDP failure), Publishers and RPs SHOULD adhere to the following guidelines.
     </t>
     <section title="Guidance for Publishers">
       <t>
-        When serializing RPKI Signed Objects to a filesystem hierarchy for publication via RSYNC, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
+        When serializing RPKI Signed Objects to a filesystem hierarchy for publication via rsync, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
     </section>
     <section title="Guidance for Relying Parties" anchor="rpguidance">
@@ -119,7 +135,7 @@
         The <em>DIR</em> component is to be substituted with the name of the directory containing previously fetched and validated RPKI data (in its original DER-encoded form, to ensure the filesize parameter matches).
       </t>
       <t>
-        From the GPL rsync man page for <em>--compare-dest=DIR</em>:
+        From the <xref target="rsync" /> man page for <em>--compare-dest=DIR</em>:
       </t>
       <t>
         <list style="empty">
@@ -131,7 +147,7 @@
         </list>
       </t>
       <t>
-        From the OpenBSD openrsync man page for <em>--compare-dest=directory</em>:
+        From the <xref target="openrsync" /> man page for <em>--compare-dest=directory</em>:
       </t>
       <t>
         <list style="empty">
@@ -144,30 +160,30 @@
     </section>
   </section>
 
-  <section title="Presence of the CMS signing-time attribute in the field">
+  <section title="Presence of the CMS signing-time attribute in public repositories">
     <t>
-      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five RIR Trust Anchors for the 12 months preceding June 6th, 2023, all of the 3,004,296,251 inspected Signed Objects contain a CMS signing-time attribute.
+      Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five Regional Internet Registry (RIR) Trust Anchors (TAs) for the 12 months preceding June 6th, 2023, all of the 3,004,296,251 Signed Objects that were inspected contained a CMS signing-time attribute.
     </t>
     <t>
-      The above means that already today <em>all</em> Certification Authorities produce Signed Objects that contain a CMS signing-time attribute. <!-- and have done so for quite a while. -->
-      Thus, making the CMS signing-time attribute mandatory would not make any existing CA operations noncompliant.
+      The above means that all of the commonly-used TAs (and their subordinate CAs) produce Signed Objects that contain a CMS signing-time attribute.
+      This means that making the CMS signing-time attribute mandatory would not cause any existing commonly-used TA or CA to become non-compliant.
     </t>
     <t>
-      As of June 3rd, 2023, for 25.8% of Signed Objects the CMS signing-time timestamp exactly matches the file's mod-time observed via RSYNC.
-      This means that it is already the case that RPs would see a significant reduction in the amount of processing required in RSYNC if they adopted the strategy outlined in <xref target="rpguidance"/>.
+      As of June 3rd, 2023, for 25.8% of Signed Objects the CMS signing-time timestamp matches the file's mod-time observed via rsync.
+      This means that it is already the case that RPs would see a significant reduction in the amount of processing required in rsync if they adopted the strategy outlined in <xref target="rpguidance"/>.
     </t>
     <t>
-      In the above-mentioned period of time, zero Signed Objects were discovered with a CMS binary-signing-time <xref target="RFC6019"/> attribute.
-      Therefore, disallowing the CMS binary-signing-time attribute would not make any existing CA operations non-compliant.
+      In the above-mentioned period of time, no Signed Objects were discovered with a CMS binary-signing-time <xref target="RFC6019"/> attribute in the specified repositories.
+      Therefore, disallowing the use of the CMS binary-signing-time attribute would not cause any existing commonly-used TA or CA to become non-compliant.
     </t>
   </section>
 
   <section title="Update to RFC 6488">
     <t>
-      This section updates <xref target="RFC6488"/> to make the CMS signing-time attribute mandatory and disallow the presence of the CMS binary-signing-time attribute.
+      This section updates <xref target="RFC6488"/> to make the CMS signing-time attribute mandatory and to disallow the presence of the CMS binary-signing-time attribute.
     </t>
     <t>
-      In section 2.1.6.4 the paragraph starting with "The signedAttrs element MUST be present and ..." and ending in "Other signed attributes MUST NOT be included." is replaced with the following text:
+      In section 2.1.6.4, the paragraph starting with "The signedAttrs element MUST be present and ..." and ending in "Other signed attributes MUST NOT be included." is replaced with the following text:
     </t>
     <t>
       <list style="empty">
@@ -178,7 +194,7 @@
       </list>
     </t>
     <t>
-      In section 2.1.6.4.3 the first sentence "The signing-time attribute MAY be present." is replaced with the following text:
+      In section 2.1.6.4.3, the first sentence "The signing-time attribute MAY be present." is replaced with the following text:
     </t>
     <t>
       <list style="empty">
@@ -187,8 +203,39 @@
         </t>
       </list>
     </t>
+
+    <t>
+      In section 2.1.6.4.3, the sentence "Note that the presence or absence of the signing-time attribute MUST NOT affect the validity of the signed object (as specified in Section 3)." is removed.
+    </t>
+
     <t>
       Section 2.1.6.4.4 is removed in its entirety.
+    </t>
+
+    <t>
+      In section 3, the paragraph starting with "The signedAttrs field in the SignerInfo object is present ..." (1.f) is replaced with the following text:
+    </t>
+    <t>
+      <list style="empty">
+        <t>
+      	  The signedAttrs field in the SignerInfo object is present and contains the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), and the signing-time attribute (1.2.840.113549.1.9.5).
+        </t>
+      </list>
+    </t>
+
+    <t>
+      In section 3, the paragraph starting with "The signedAttrs field in the SignerInfo object does not ..." (1.g) is replaced with the following text:
+    </t>
+    <t>
+      <list style="empty">
+        <t>
+	  The signedAttrs field in the SignerInfo object does not contain any attributes other than the following three: the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), and the signing-time attribute (OID 1.2.840.113549.1.9.5).
+        </t>
+      </list>
+    </t>
+
+    <t>
+      In section 9 ("Informative References"), <xref target="RFC6019"/> is removed from the list.
     </t>
   </section>
 
@@ -349,7 +396,7 @@
     </t>
     <t>
       There is also an increased chance of two distinct objects published to the same path having the same mod-time and filesize under this approach, due to CAs setting the notBefore timestamp to some stable value for a given object and reissuance often not changing the file size (e.g. where a prefix or a max-length value is changed in a ROA).
-      In such a situation, if the receiver has the first copy of a file, RSYNC retrieval will skip the second copy of the file, and the synchronization operation for the associated repository will result in a "failed fetch", per section 6.6 of <xref target="RFC9286" />, due to an inconsistency between the file's hash and the hash listed in the associated manifest.
+      In such a situation, if the receiver has the first copy of a file, rsync retrieval will skip the second copy of the file, and the synchronization operation for the associated repository will result in a "failed fetch", per section 6.6 of <xref target="RFC9286" />, due to an inconsistency between the file's hash and the hash listed in the associated manifest.
       That in turn necessitates further retrieval operations on the part of the receiver.
       The chance of two distinct objects being issued with the same mod-time and filesize when CMS signing-time is used to set the mod-time is much smaller, since it requires that those distinct objects be issued in very close succession.
     </t>
@@ -365,7 +412,7 @@
     </t>
     <t>
       The <em>--checksum</em> option to rsync disables the mod-time and filesize comparison check in favour of a check based on a whole-file checksum.
-      This check is slower than the mod-time and filesize check, but (in instances where the file content has not changed) faster than the general-purpose RSYNC synchronization algorithm.
+      This check is slower than the mod-time and filesize check, but (in instances where the file content has not changed) faster than the general-purpose rsync synchronization algorithm.
       Since ensuring consistency between the mod-time and filesize on both sides of the transaction is straightforward, there is no particular reason to pursue an approach based on rsync's <em>--checksum</em> feature.
     </t>
   </section>
@@ -387,10 +434,10 @@
 
     <t>
       <list style="symbols">
-        <t><xref target="rpkitouch"/> - a timestamp setter utility for both RSYNC servers and RRDP clients by Job Snijders in C.</t>
+        <t><xref target="rpkitouch"/> - a timestamp setter utility for both rsync servers and RRDP clients by Job Snijders in C.</t>
         <t><xref target="rpki-client"/> - a Relying Party implementation by OpenBSD in C, a client side implementation.</t>
-        <t><xref target="rsyncit"/> - a RRDP-to-RSYNC sync tool by RIPE NCC in Java, run on the server side.</t>
-        <t><xref target="apnicrepository"/> - the public APNIC RPKI repository - the APNIC RSYNC server normalizes timestamps.</t>
+        <t><xref target="rsyncit"/> - a RRDP-to-rsync sync tool by RIPE NCC in Java, run on the server side.</t>
+        <t><xref target="apnicrepository"/> - the public APNIC RPKI repository - the APNIC rsync server normalizes timestamps.</t>
         <t><xref target="rpki-rrdp-tools-py"/> - a number of client-side RRDP utilities by Ties de Kock in Python.</t>
       </list>
     </t>
