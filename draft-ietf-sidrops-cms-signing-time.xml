@@ -58,8 +58,8 @@
   <abstract>
 
     <t>
-      In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types by way of a standard template.
-      That template includes an CMS signing-time attribute, representing the time at which the object was signed by its issuer.
+      In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types by way of a standard template (RFC 6488).
+      That template includes an optional CMS signing-time attribute, representing the purported time at which the object was signed by its issuer.
       At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
     </t>
 
@@ -67,12 +67,12 @@
       Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP).
       While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most Relying Party (RP) implementations.
       However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.
-      As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
+      As deployment experience with RRDP has increased, the usefulness of optimizing switchovers by RPs from one mechanism to the other has become apparent.
     </t>
 
     <t>
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.
-      Additionally, this document updates the RPKI Signed Object Template by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
+      Additionally, this document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
 
   </abstract>
@@ -98,16 +98,16 @@
       Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182" />.
       While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most RP implementations.
       However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.
-      As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
+      As deployment experience with RRDP has increased, the usefulness of optimizing switchovers by RPs from one mechanism to the other has become apparent.
     </t>
 
     <t>
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.
-      Additionally, this document updates <xref target="RFC6488" /> by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
+      Additionally, this document updates <xref target="RFC6488" /> by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
   </section>
 
-  <section title="Optimized transition from RRDP to rsync">
+  <section title="Optimized switchover from RRDP to rsync">
     <t>
       To avoid needless re-transfers of unchanged files in consecutive rsync synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files: as long as a given file's contents do not change, Publishers SHOULD ensure that the file's last modification timestamp remains unchanged as well.
     </t>
@@ -172,7 +172,7 @@
       Analysing an archive <xref target="rpkiviews"/> containing valid RPKI Signed Objects discovered via the five Regional Internet Registry (RIR) Trust Anchors (TAs) for the 12 months preceding June 6th, 2023, all of the 3,004,296,251 Signed Objects that were inspected contained a CMS signing-time attribute.
     </t>
     <t>
-      The above means that all of the commonly-used TAs (and their subordinate CAs) produce Signed Objects that contain a CMS signing-time attribute.
+      The above means that all of the commonly-used TAs and their subordinate Certification Authorities (CAs) produce Signed Objects that contain a CMS signing-time attribute.
       This means that making the CMS signing-time attribute mandatory would not cause any existing commonly-used TA or CA to become non-compliant.
     </t>
     <t>
@@ -348,6 +348,14 @@
       </front>
     </reference>
 
+    <reference anchor="krill-sync" target="https://github.com/NLnetLabs/krill-sync/commit/1df59eac3112384e11b44c2da3010f63925ec50e">
+      <front>
+        <title>krill-sync - 0.3.0 development branch</title>
+        <author fullname="NLNet Labs"/>
+        <date month="December" year="2023"/>
+      </front>
+    </reference>
+
     <reference anchor="rpkiviews" target="http://www.rpkiviews.org/">
       <front>
         <title>rpkiviews</title>
@@ -446,6 +454,7 @@
         <t><xref target="rsyncit"/> - a RRDP-to-rsync sync tool by RIPE NCC in Java, run on the server side.</t>
         <t><xref target="apnicrepository"/> - the public APNIC RPKI repository - the APNIC rsync server normalizes timestamps.</t>
         <t><xref target="rpki-rrdp-tools-py"/> - a number of client-side RRDP utilities by Ties de Kock in Python.</t>
+        <t><xref target="krill-sync"/> - a RRDP-to-rsync sync tool by NLNet Labs in Rust, run on the server side.</t>
       </list>
     </t>
 
