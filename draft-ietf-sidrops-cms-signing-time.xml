@@ -187,8 +187,39 @@
         </t>
       </list>
     </t>
+
+    <t>
+      In section 2.1.6.4.3 the sentence "Note that the presence or absence of the signing-time attribute MUST NOT affect the validity of the signed object (as specified in Section 3)." is removed.
+    </t>
+
     <t>
       Section 2.1.6.4.4 is removed in its entirety.
+    </t>
+
+    <t>
+      In section 3 the paragraph starting with "The signedAttrs field in the SignerInfo object is present ..." (1.f) is replaced with the following text:
+    </t>
+    <t>
+      <list style="empty">
+        <t>
+      	  The signedAttrs field in the SignerInfo object is present and contains the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), and the signing-time attribute (1.2.840.113549.1.9.5).
+        </t>
+      </list>
+    </t>
+
+    <t>
+      In section 3 the paragraph starting with "The signedAttrs field in the SignerInfo object does not ..." (1.g) is replaced with the following text:
+    </t>
+    <t>
+      <list style="empty">
+        <t>
+	  The signedAttrs field in the SignerInfo object does not contain any attributes other than the following three: the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), and the signing-time attribute (OID 1.2.840.113549.1.9.5).
+        </t>
+      </list>
+    </t>
+
+    <t>
+      In section 9 ("Informative References"), <xref target="RFC6019"/> is removed from the list.
     </t>
   </section>
 
