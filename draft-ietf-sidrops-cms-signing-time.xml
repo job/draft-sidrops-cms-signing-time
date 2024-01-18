@@ -351,7 +351,9 @@
     <reference anchor="krill-sync" target="https://github.com/NLnetLabs/krill-sync/commit/1df59eac3112384e11b44c2da3010f63925ec50e">
       <front>
         <title>krill-sync - 0.3.0 development branch</title>
-        <author fullname="NLNet Labs"/>
+        <author>
+          <organization>NLNet Labs</organization>
+        </author>
         <date month="December" year="2023"/>
       </front>
     </reference>
