@@ -58,21 +58,21 @@
   <abstract>
 
     <t>
-
-      In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types by way of a standard template.  That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.  At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
-
+      In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types by way of a standard template.
+      That template includes an CMS signing-time attribute, representing the time at which the object was signed by its issuer.
+      At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
     </t>
 
     <t>
-
-      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP).  While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most Relying Party (RP) implementations.  However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.  As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
-
+      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP).
+      While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most Relying Party (RP) implementations.
+      However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.
+      As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
     </t>
 
     <t>
-
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.  Additionally, this document updates the RPKI Signed Object Template by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
-
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.
+      Additionally, this document updates the RPKI Signed Object Template by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
 
   </abstract>
@@ -89,15 +89,21 @@
 
   <section title="Introduction">
     <t>
-      In the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480" />, Signed Objects are defined as Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types by way of a standard template <xref target="RFC6488" />.  That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.  At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
+      In the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480" />, Signed Objects are defined as Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types by way of a standard template <xref target="RFC6488" />.
+      That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.
+      At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
     </t>
 
     <t>
-      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182" />.  While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most RP implementations.  However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.  As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
+      Since the publication of the standard template, a new, additional protocol for distribution of RPKI repositories has been developed: the RPKI Repository Delta Protocol (RRDP) <xref target="RFC8182" />.
+      While RPKI repository operators must provide rsync service, RRDP is typically deployed alongside it as well, and preferred by default by most RP implementations.
+      However, RP implementations also support fallback to rsync in the event of problems with the RRDP service.
+      As deployment experience with RRDP has increased, the usefulness of optimizing transition by RPs from one mechanism to the other has become apparent.
     </t>
 
     <t>
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.  Additionally, this document updates <xref target="RFC6488" /> by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
+      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the cost of transition from RRDP to rsync.
+      Additionally, this document updates <xref target="RFC6488" /> by mandating the use of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
   </section>
 
@@ -109,7 +115,8 @@
       This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of rsync, by leveraging data previously fetched via RRDP.
     </t>
     <t>
-      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, all modern RP implementations will first attempt synchronization via RRDP.  If synchronization via RRDP fails for some reason (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
+      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, all modern RP implementations will first attempt synchronization via RRDP.
+      If synchronization via RRDP fails for some reason (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
     </t>
     <t>
       In the rsync synchronization protocol, a file's last modification timestamp (from here on 'mod-time') and filesize are used to determine whether the general-purpose rsync synchronization algorithm needs to be executed for the file.
