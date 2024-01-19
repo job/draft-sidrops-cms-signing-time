@@ -248,7 +248,11 @@
 
   <section title="Security Considerations">
     <t>
-      This document has no Security Considerations.
+      No requirement is imposed concerning the correctness of the signing time attribute.
+      It does not provide reliable information on the time the signature was produced and it bears no relevance for seamless switchover between RRDP and rsync.
+    </t>
+    <t>
+      While the Security Considerations in <xref target="RFC6019"/> mandate that the signing-time and binary-signing-time attributes, if both present, MUST provide the same date and time; a potential for ambiguity is removed by restricting the RPKI Signed Object profile to have only one field to store the purported signing time.
     </t>
   </section>
 
