@@ -10,7 +10,7 @@
 
 <rfc xmlns:xi="http://www.w3.org/2001/XInclude"
   category="std"
-  docName="draft-ietf-sidrops-cms-signing-time-04"
+  docName="draft-ietf-sidrops-cms-signing-time-05"
   updates="6488"
   ipr="trust200902"
   submissionType="IETF"
@@ -176,7 +176,7 @@
       This means that making the CMS signing-time attribute mandatory would not cause any existing commonly-used TA or CA to become non-compliant.
     </t>
     <t>
-      As of June 3rd, 2023, for 25.8% of Signed Objects the CMS signing-time timestamp matches the file's mod-time observed via rsync.
+      As of January 23rd, 2024, for 76.9% of Signed Objects the CMS signing-time timestamp matches the file's mod-time observed via rsync.
       This means that it is already the case that RPs would see a significant reduction in the amount of processing required in rsync if they adopted the strategy outlined in <xref target="rpguidance"/>.
     </t>
     <t>
