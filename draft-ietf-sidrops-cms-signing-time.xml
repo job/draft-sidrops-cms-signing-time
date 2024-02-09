@@ -109,7 +109,8 @@
 
   <section title="Optimized switchover from RRDP to rsync">
     <t>
-      To avoid needless re-transfers of unchanged files in consecutive rsync synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files: as long as a given file's contents do not change, Publishers SHOULD ensure that the file's last modification timestamp remains unchanged as well.
+      To avoid needless re-transfers of unchanged files in consecutive rsync synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files.
+      When the content of a file is unchanged, Publishers SHOULD ensure that the last modification timestamp of the file remains unchanged as well.
     </t>
     <t>
       This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of rsync, by leveraging data previously fetched via RRDP.
@@ -267,8 +268,9 @@
       The authors would like to thank
       <contact fullname="Ties de Kock"/>,
       <contact fullname="Niels Bakker"/>,
+      <contact fullname="Mikael Abrahamsson"/>,
       and
-      <contact fullname="Mikael Abrahamsson"/>
+      <contact fullname="Russ Housley"/>
       for their helpful review of this document.
     </t>
   </section>
