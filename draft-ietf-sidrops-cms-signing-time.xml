@@ -106,7 +106,7 @@
       This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of rsync, by leveraging data previously fetched via RRDP.
     </t>
     <t>
-      As described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>, all modern RP implementations will first attempt synchronization via RRDP.
+      At the time of writing, all commonly used RP implementations will first attempt synchronization via RRDP, as described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>.
       If synchronization via RRDP fails for some reason (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
     </t>
     <t>
@@ -262,8 +262,9 @@
       <contact fullname="Russ Housley"/>,
       <contact fullname="Zaheduzzaman Sarker"/>,
       <contact fullname="Éric Vyncke"/>,
+      <contact fullname="Mahesh Jethanandani"/>,
       and
-      <contact fullname="Mahesh Jethanandani"/>
+      <contact fullname="Roman Danyliw"/>,
       for their helpful review of this document.
     </t>
   </section>
