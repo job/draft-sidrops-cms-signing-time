@@ -60,7 +60,7 @@
     <t>
       In the Resource Public Key Infrastructure (RPKI), Signed Objects are defined as Cryptographic Message Syntax (CMS) protected content types.
       Signed Objects contain a signing-time attribute, representing the purported time at which the object was signed by its issuer.
-      RPKI repositories are accessible using the rsync and RPKI Repository Delta protocols, allowing Relying Parties to synchronize a local copy of the RPKI repository used for validation with the remote repositories.
+      RPKI repositories are accessible using the rsync and RPKI Repository Delta protocols, allowing Relying Parties (RPs) to synchronize a local copy of the RPKI repository used for validation with the remote repositories.
       This document describes how the CMS signing-time attribute can be used to avoid needless retransfers of data when switching between different synchronization protocols.
       This document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
@@ -92,7 +92,7 @@
     </t>
 
     <t>
-      This document describes how Repository Operators and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
+      This document describes how Repository Operators <xref target="RFC6481" /> and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
       Additionally, this document updates <xref target="RFC6488" /> by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
   </section>
@@ -280,6 +280,7 @@
     <?rfc include="reference.RFC.5652.xml"?>
     <?rfc include="reference.RFC.6268.xml"?>
     <?rfc include="reference.RFC.6480.xml"?>
+    <?rfc include="reference.RFC.6481.xml"?>
     <?rfc include="reference.RFC.6488.xml"?>
 
     <reference anchor="rsync" target="https://rsync.samba.org/">
