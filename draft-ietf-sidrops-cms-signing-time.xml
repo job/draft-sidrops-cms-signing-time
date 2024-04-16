@@ -281,14 +281,6 @@
     <?rfc include="reference.RFC.6268.xml"?>
     <?rfc include="reference.RFC.6480.xml"?>
     <?rfc include="reference.RFC.6488.xml"?>
-  </references>
-
-  <references title="Informative References">
-    <?rfc include="reference.RFC.6019.xml"?>
-    <?rfc include="reference.RFC.9286.xml"?>
-
-    <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.timbru-sidrops-publication-server-bcp.xml"/>
-    <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-prefer-rrdp.xml"/>
 
     <reference anchor="rsync" target="https://rsync.samba.org/">
       <front>
@@ -309,6 +301,15 @@
         <date year="2023" />
       </front>
     </reference>
+
+  </references>
+
+  <references title="Informative References">
+    <?rfc include="reference.RFC.6019.xml"?>
+    <?rfc include="reference.RFC.9286.xml"?>
+
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.timbru-sidrops-publication-server-bcp.xml"/>
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-sidrops-prefer-rrdp.xml"/>
 
     <reference anchor="rpkitouch" target="https://github.com/job/rpkitouch">
       <front>
