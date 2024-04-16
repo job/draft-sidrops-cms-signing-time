@@ -71,7 +71,7 @@
     </t>
 
     <t>
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
+      This document describes how Repository operators and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
       Additionally, this document updates RFC 6488 by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
 
@@ -102,7 +102,7 @@
     </t>
 
     <t>
-      This document describes how Publishers and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
+      This document describes how Repository Operators and RPs can use the CMS signing-time attribute to minimize the burden of switching over from RRDP to rsync.
       Additionally, this document updates <xref target="RFC6488" /> by mandating the presence of the CMS signing-time attribute and disallowing the use of the binary-signing-time attribute.
     </t>
   </section>
@@ -110,7 +110,7 @@
   <section title="Optimized switchover from RRDP to rsync">
     <t>
       To avoid needless re-transfers of unchanged files in consecutive rsync synchronizations, <xref target="I-D.timbru-sidrops-publication-server-bcp"/> recommends the use of so-called 'deterministic' (normalized) timestamps for files.
-      When the content of a file is unchanged, Publishers SHOULD ensure that the last modification timestamp of the file remains unchanged as well.
+      When the content of a file is unchanged, Repository Operators SHOULD ensure that the last modification timestamp of the file remains unchanged as well.
     </t>
     <t>
       This document advances the aforementioned concept by describing a synchronization strategy through which needless transfers are also avoided upon first use of rsync, by leveraging data previously fetched via RRDP.
@@ -126,9 +126,9 @@
       Ensuring consistency with respect to mod-time for both senders and receivers helps to reduce the burden of rsync synchronization in terms of network bandwidth, disk I/O operations, and CPU usage.
     </t>
     <t>
-      In order to reduce the burden of the rsync synchronization (following an RRDP failure), Publishers and RPs SHOULD adhere to the following guidelines.
+      In order to reduce the burden of the rsync synchronization (following an RRDP failure), Repository Operators and RPs SHOULD adhere to the following guidelines.
     </t>
-    <section title="Guidance for Publishers">
+    <section title="Guidance for Repository Operators">
       <t>
         When serializing RPKI Signed Objects to a filesystem hierarchy for publication via rsync, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
@@ -138,7 +138,7 @@
         When serializing RPKI Signed Objects retrieved via RRDP to a filesystem hierarchy, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
       <t>
-        If an RP uses RRDP to synthesize a filesystem hierarchy for the repository, then synchronizing from the publisher to the corresponding directory directly is an option.
+        If an RP uses RRDP to synthesize a filesystem hierarchy for the repository, then synchronizing to the corresponding directory directly is an option.
         Alternatively, the RP can synchronize to a new (empty) directory using the <em>--compare-dest=DIR</em> rsync feature, in order to avoid retrieving files that are already available by way of the synthesized filesystem hierarchy stemming from previous RRDP fetches.
         The <em>DIR</em> component is to be substituted with the name of the directory containing previously fetched and validated RPKI data (in its original DER-encoded form, to ensure the filesize parameter matches).
       </t>
@@ -269,8 +269,9 @@
       <contact fullname="Ties de Kock"/>,
       <contact fullname="Niels Bakker"/>,
       <contact fullname="Mikael Abrahamsson"/>,
+      <contact fullname="Russ Housley"/>,
       and
-      <contact fullname="Russ Housley"/>
+      <contact fullname="Zaheduzzaman Sarker"/>
       for their helpful review of this document.
     </t>
   </section>
@@ -424,7 +425,7 @@
       The chance of two distinct objects being issued with the same mod-time and filesize when CMS signing-time is used to set the mod-time is much smaller, since it requires that those distinct objects be issued in very close succession.
     </t>
     <t>
-      Another downside of using notBefore is that Publishers would need to deserialize both the CMS envelope and the X.509 EE certificate contained therein to extract a timestamp, instead of merely parsing the CMS envelope.
+      Another downside of using notBefore is that Repository operators would need to deserialize both the CMS envelope and the X.509 EE certificate contained therein to extract a timestamp, instead of merely parsing the CMS envelope.
     </t>
     <t>
       Ensuring the mod-time is set to the CMS signing-time gives RPKI operators a headstart when using tools like <xref target="ls"/>, in the sense that the mod-time aligns with the purported time of object issuance.
