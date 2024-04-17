@@ -160,7 +160,7 @@
 
   <section title="Presence of the CMS signing-time attribute in public repositories">
     <t>
-      Analysing the <xref target="rpkiviews"/> archives containing millions of RPKI Signed Objects discovered via the five Regional Internet Registry (RIR) Trust Anchors (TAs) from June 6th, 2022 until January 29th, 2024, each Signed Object contained a CMS signing-time attribute.
+      Analysing the <xref target="rpkiviews"/> archives containing millions of RPKI Signed Objects discovered via the five Regional Internet Registry (RIR) Trust Anchors (TAs) from June 6th, 2022 until January 29th, 2024, every discovered valid Signed Object contained a CMS signing-time attribute.
     </t>
     <t>
       The above means that all of the commonly-used TAs and their subordinate Certification Authorities (CAs) produce Signed Objects that contain a CMS signing-time attribute.
