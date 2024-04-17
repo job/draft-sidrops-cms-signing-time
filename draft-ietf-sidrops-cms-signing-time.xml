@@ -107,7 +107,7 @@
     </t>
     <t>
       At the time of writing, all commonly used RP implementations will first attempt synchronization via RRDP, as described in <xref target="I-D.ietf-sidrops-prefer-rrdp"/>.
-      If synchronization via RRDP fails for some reason (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
+      If synchronization via RRDP fails (e.g. malformed XML, expired TLS certificate, HTTP connection timeout), the RP will attempt to synchronize via rsync instead.
     </t>
     <t>
       In the rsync synchronization protocol, a file's last modification timestamp (from here on 'mod-time') and filesize are used to determine whether the general-purpose rsync synchronization algorithm needs to be executed for the file.
@@ -264,6 +264,7 @@
       <contact fullname="Éric Vyncke"/>,
       <contact fullname="Mahesh Jethanandani"/>,
       <contact fullname="Roman Danyliw"/>,
+      <contact fullname="Gunter Van de Velde"/>,
       and
       <contact fullname="John Scudder"/>,
       for their helpful review of this document.
