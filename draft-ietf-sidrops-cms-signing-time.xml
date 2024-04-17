@@ -128,7 +128,7 @@
         When serializing RPKI Signed Objects retrieved via RRDP to a filesystem hierarchy, the mod-time of the file containing the Signed Object SHOULD be set to the value of the CMS signing-time attribute contained within the Signed Object.
       </t>
       <t>
-        If an RP uses RRDP to synthesize a filesystem hierarchy for the repository, then synchronizing to the corresponding directory directly is an option.
+        If an RP used RRDP to synthesize a filesystem hierarchy for the repository, then when it must fall back to rsync one option is synchronizing to the corresponding directory directly.
         Alternatively, the RP can synchronize to a new (empty) directory using the <em>--compare-dest=DIR</em> rsync feature, in order to avoid retrieving files that are already available by way of the synthesized filesystem hierarchy stemming from previous RRDP fetches.
         The <em>DIR</em> component is to be substituted with the name of the directory containing previously fetched and validated RPKI data (in its original DER-encoded form, to ensure the filesize parameter matches).
       </t>
@@ -263,8 +263,9 @@
       <contact fullname="Zaheduzzaman Sarker"/>,
       <contact fullname="Éric Vyncke"/>,
       <contact fullname="Mahesh Jethanandani"/>,
-      and
       <contact fullname="Roman Danyliw"/>,
+      and
+      <contact fullname="John Scudder"/>,
       for their helpful review of this document.
     </t>
   </section>
