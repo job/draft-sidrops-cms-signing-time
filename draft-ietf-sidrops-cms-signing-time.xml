@@ -79,9 +79,9 @@
 
   <section title="Introduction">
     <t>
-      In the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480" />, Signed Objects are defined as Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types by way of a standard template <xref target="RFC6488" />.
-      That template includes an optional CMS signing-time attribute, representing the time at which the object was signed by its issuer.
-      At the time when the standard template was defined, rsync was the only distribution mechanism for RPKI repositories.
+      In the Resource Public Key Infrastructure (RPKI) <xref target="RFC6480" />, Signed Objects are specified as Cryptographic Message Syntax (CMS) <xref target="RFC5652"/> <xref target="RFC6268"/> protected content types, utilizing a standardized template as defined in RFC 6488 <xref target="RFC6488" />.
+      This template encompasses an optional CMS signing-time attribute, which purports to indicate the time at which the issuer signed the object.
+      Concurrent with the establishment of this standard template, rsync constituted the sole distribution mechanism for RPKI repositories.
     </t>
 
     <t>
